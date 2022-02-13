@@ -1,0 +1,14 @@
+{% extends 'payments/base.html' %}
+{% load i18n %}
+{% block content %}
+    {% if object.track_id %}
+        <h2>{% trans 'Now redirecting to payment gateway...' %}</h2>
+        <script>
+            window.setTimeout(function () {
+                window.location.href = "{{ object.get_ipg_redirect_url }}";
+            }, 2000);
+        </script>
+    {% else %}
+        <h2>{% trans 'Failed to contact Zibal IPG.' %}</h2>
+    {% endif %}
+{% endblock %}

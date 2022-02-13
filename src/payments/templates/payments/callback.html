@@ -1,0 +1,9 @@
+{% extends 'payments/base.html' %}
+{% block content %}
+    {% if error %}
+        <h2>{{ error }}</h2>
+    {% endif %}
+    {% if object %}
+        <h2>Payment was {{ object.is_successful_and_verified|yesno:"Successful,Failed,Unknown" }}.</h2>
+    {% endif %}
+{% endblock %}
