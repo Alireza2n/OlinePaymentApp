@@ -1,4 +1,8 @@
 pip
 django
 djongo
+pymongo==3.12.1
 requests
+python-decouple
+gunicorn
+pytz

@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext as _
 from . import models, utils, forms
 
@@ -16,7 +16,9 @@ def prepare_payment_view(request):
         amount=10000,
         order_id=utils.generate_a_random_string()
     )
+    print(payment_obj.pk)
     payment_obj.obtain_zibal_track_id()
+    print(payment_obj.pk)
     cxt.update({
         'object': payment_obj
     })

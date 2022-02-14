@@ -2,8 +2,10 @@ import json
 import logging
 
 import requests.exceptions
-from django.db import models
+from django.conf import settings
 from django.utils.translation import gettext as _
+from djongo import models
+
 from . import enums
 
 logger = logging.getLogger(__name__)
@@ -15,6 +17,8 @@ class Payment(models.Model):
     fields
     """
     # Generic fields
+    _id = models.ObjectIdField()
+
     created_on = models.DateTimeField(auto_now_add=True)
 
     # Used when requesting payment form IPG
@@ -53,6 +57,8 @@ class Payment(models.Model):
         verbose_name=_('Ref. Number')
     )
 
+    objects = models.DjongoManager()
+
     class Meta:
         ordering = ('-created_on',)
 
@@ -72,7 +78,7 @@ class Payment(models.Model):
                 json={
                     "merchant": "zibal",
                     "amount": self.amount,
-                    "callbackUrl": "http://localhost:8021/payments/callback",
+                    "callbackUrl": f"{settings.BASE_URL}/payments/callback",
                     "orderId": self.order_id
                 }
             )
@@ -144,8 +150,8 @@ class Payment(models.Model):
         }
         """
         self.payed_amount = decoded_response.get('amount', None)
-        self.verification_status_code = decoded_response.get('status',None)
-        self.ref_number = decoded_response.get('refNumber',None)
+        self.verification_status_code = decoded_response.get('status', None)
+        self.ref_number = decoded_response.get('refNumber', None)
 
         # Verification logic
         c1 = self.payed_amount == self.amount
