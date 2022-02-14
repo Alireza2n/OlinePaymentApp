@@ -16,9 +16,7 @@ def prepare_payment_view(request):
         amount=10000,
         order_id=utils.generate_a_random_string()
     )
-    print(payment_obj.pk)
     payment_obj.obtain_zibal_track_id()
-    print(payment_obj.pk)
     cxt.update({
         'object': payment_obj
     })
@@ -41,6 +39,7 @@ def payment_callback_view(request):
     payment_obj = get_object_or_404(models.Payment, order_id=form.cleaned_data['orderId'])
     payment_obj.update_from_callback_args(form.cleaned_data)
     payment_obj.verify()
+    payment_obj.notify()
 
     cxt.update({
         'object': payment_obj

@@ -163,3 +163,8 @@ LOGGING = {
         },
     }
 }
+
+NOTIFICATION_API = {
+    'URL': config('NOTIFICATION_API_URL', default='http://localhost:8000'),
+    'TIMEOUT': config('NOTIFICATION_API_TIMEOUT', cast=int, default=2),
+}

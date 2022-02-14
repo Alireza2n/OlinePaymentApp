@@ -164,3 +164,30 @@ class Payment(models.Model):
         self.save()
 
         return True
+
+    def notify(self) -> None:
+        """
+        Notifies owner
+        """
+        try:
+            response = requests.post(
+                url=f"{settings.NOTIFICATION_API['URL']}/api/v1/enqueue",
+                json={
+                    'mediums': ['telegram'],
+                    'recipients': ['Someone'],
+                    'message_detail': {
+                        'body': self._get_notification_body()
+                    },
+                },
+                timeout=settings.NOTIFICATION_API['TIMEOUT']
+            )
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logger.error(f'Invalid data returned from notification API, {e}.')
+        except requests.exceptions.RequestException as e:
+            logger.error(f'Failed to call notification API, {e}.')
+
+    def _get_notification_body(self) -> str:
+        if self.is_successful_and_verified():
+            return f'Your Order "{self.order_id}" payment was successful. 🥳'
+        return f'Your Order "{self.order_id}", payment failed. Please try again. 🧐'
